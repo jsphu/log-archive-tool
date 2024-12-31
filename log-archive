@@ -1,0 +1,91 @@
+#!/bin/bash
+dir="$1"
+
+function usage() {
+  echo "Usage: $0 [directory]"
+  echo "Description: $0 archives bash history to given directory."
+  echo "Examples:"
+  echo "    $0 new-directory"
+  echo "    $0 old-existing-directory"
+}
+
+# Argument handling
+if [ $# -gt 1 ]; then
+  echo "Error: $0 takes exactly one argument."
+  echo "Unkown arguments: $*"
+  echo ""
+  usage 
+  exit 2
+elif [ -z "$dir" ]; then
+  echo "Error: $0 needs a positional-argument"
+  echo ""
+  usage 
+  exit 2
+fi 
+
+history=~/.bash_history
+# Checks bash history
+if [ ! -e $history ]; then
+  echo "Error: $0 did not found bash history file."
+  echo "Program only works with .bash_history file"
+  echo "Program sad."
+  echo "Program exits."
+  exit 1
+fi 
+
+function isrelative() {
+    first=$(echo "$dir"|head -c 1)
+    
+    if [ "$first"=="." ]; then
+        return true  
+    
+    elif [ "$first"=="/" ]; then 
+    
+        home="$(echo "$dir" |head -c 5)"
+        
+        if [ "$home"!="/home" ]; then
+            echo "Warning: You are outside of the home."
+        fi
+        return false
+    
+    else 
+        return false
+    fi
+}
+
+if [ isrelative ]; then
+    newdir="$(pwd)/$dir"
+else
+    newdir="$dir"
+fi
+
+if [ ! -d $newdir ]; then
+  mkdir $newdir 
+  echo "[LOG$(date -Ihours)] $newdir not found." >> $dir/$0-hist.log
+  echo "[CMD$(date -Ihours)] $ mkdir $newdir" >> $dir/$0-hist.log
+fi 
+
+cd $newdir
+
+echo "[CMD$(date -Ihours)] $ cd $newdir" >> $dir/$0-hist.log
+
+name=$(date -Iseconds |tr -d ":+T-" |head -c -5)
+
+grep "$newdir" ~/.bash_history > relations.log
+echo "[LOG$(date -Ihours)] Relations writed to $dir/relations.log" >> $dir/$0-hist.log
+echo "[CMD$(date -Ihours)] $ grep '$newdir' ~/.bash_history">> $dir/$0-hist.log
+
+cp ~/.bash_history $newdir
+echo "[LOG$(date -Ihours)] .bash_history file copied to $newdir" >> $dir/$0-hist.log
+echo "[CMD$(date -Ihours)] $ cp ~/.bash_history $newdir" >> $dir/$0-hist.log
+
+echo "[LOG$(date -Ihours)] $newdir archived." >> $dir/$0-hist.log
+echo "[CMD$(date -Ihours)] $ tar -czvf $0-$name.tar.gz relations.log .bash_history $0-hist.log" >> $dir/$0-hist.log
+echo "[LOG$(date -Ihours)] Old files removed." >> $dir/$0-hist.log
+echo "[CMD$(date -Ihours)] $ rm -f relations.log .bash_history $0-hist.log"
+
+tar -czvf $0-$name.tar.gz relations.log .bash_history $0-hist.log > /dev/null
+
+rm -f relations.log .bash_history $0-hist.log
+
+echo "Archived inside: $newdir"
