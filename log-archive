@@ -61,28 +61,29 @@ fi
 
 if [ ! -d $newdir ]; then
   mkdir $newdir 
-  echo "[LOG$(date -Ihours)] $newdir not found." >> $dir/$0-hist.log
-  echo "[CMD$(date -Ihours)] $ mkdir $newdir" >> $dir/$0-hist.log
+  echo "[LOG$(date -Iseconds |tr -d ":+T-" |head -c -5)] $newdir not found." >> $dir/$0-hist.log
+  echo "[CMD$(date -Iseconds |tr -d ":+T-" |head -c -5)] $ mkdir $newdir" >> $dir/$0-hist.log
 fi 
 
 cd $newdir
+#ls -a
 
-echo "[CMD$(date -Ihours)] $ cd $newdir" >> $dir/$0-hist.log
+echo "[CMD$(date -Iseconds |tr -d ":+T-" |head -c -5)] $ cd $newdir" >> $newdir/$0-hist.log
 
 name=$(date -Iseconds |tr -d ":+T-" |head -c -5)
 
-grep "$newdir" ~/.bash_history > relations.log
-echo "[LOG$(date -Ihours)] Relations writed to $dir/relations.log" >> $dir/$0-hist.log
-echo "[CMD$(date -Ihours)] $ grep '$newdir' ~/.bash_history">> $dir/$0-hist.log
+grep "$dir" ~/.bash_history > relations.log
+echo "[LOG$(date -Iseconds |tr -d ":+T-" |head -c -5)] Relations writed to $dir/relations.log" >> $newdir/$0-hist.log
+echo "[CMD$(date -Iseconds |tr -d ":+T-" |head -c -5)] $ grep '$newdir' ~/.bash_history">> $newdir/$0-hist.log
 
 cp ~/.bash_history $newdir
-echo "[LOG$(date -Ihours)] .bash_history file copied to $newdir" >> $dir/$0-hist.log
-echo "[CMD$(date -Ihours)] $ cp ~/.bash_history $newdir" >> $dir/$0-hist.log
+echo "[LOG$(date -Iseconds |tr -d ":+T-" |head -c -5)] .bash_history file copied to $newdir" >> $newdir/$0-hist.log
+echo "[CMD$(date -Iseconds |tr -d ":+T-" |head -c -5)] $ cp ~/.bash_history $newdir" >> $newdir/$0-hist.log
 
-echo "[LOG$(date -Ihours)] $newdir archived." >> $dir/$0-hist.log
-echo "[CMD$(date -Ihours)] $ tar -czvf $0-$name.tar.gz relations.log .bash_history $0-hist.log" >> $dir/$0-hist.log
-echo "[LOG$(date -Ihours)] Old files removed." >> $dir/$0-hist.log
-echo "[CMD$(date -Ihours)] $ rm -f relations.log .bash_history $0-hist.log"
+echo "[LOG$(date -Iseconds |tr -d ":+T-" |head -c -5)] $newdir archived." >> $newdir/$0-hist.log
+echo "[CMD$(date -Iseconds |tr -d ":+T-" |head -c -5)] $ tar -czvf $0-$name.tar.gz relations.log .bash_history $0-hist.log" >> $newdir/$0-hist.log
+echo "[LOG$(date -Iseconds |tr -d ":+T-" |head -c -5)] Old files removed." >> $newdir/$0-hist.log
+echo "[CMD$(date -Iseconds |tr -d ":+T-" |head -c -5)] $ rm -f relations.log .bash_history $0-hist.log" >> $newdir/$0-hist.log
 
 tar -czvf $0-$name.tar.gz relations.log .bash_history $0-hist.log > /dev/null
 
