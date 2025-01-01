@@ -74,7 +74,7 @@ name=$(date -Iseconds |tr -d ":+T-" |head -c -5)
 
 grep "$dir" ~/.bash_history > relations.log
 echo "[LOG$(date -Iseconds |tr -d ":+T-" |head -c -5)] Relations writed to $dir/relations.log" >> $newdir/$0-hist.log
-echo "[CMD$(date -Iseconds |tr -d ":+T-" |head -c -5)] $ grep '$newdir' ~/.bash_history">> $newdir/$0-hist.log
+echo "[CMD$(date -Iseconds |tr -d ":+T-" |head -c -5)] $ grep '$dir' ~/.bash_history">> $newdir/$0-hist.log
 
 cp ~/.bash_history $newdir
 echo "[LOG$(date -Iseconds |tr -d ":+T-" |head -c -5)] .bash_history file copied to $newdir" >> $newdir/$0-hist.log
