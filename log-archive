@@ -54,7 +54,11 @@ function isrelative() {
 }
 
 if [ isrelative ]; then
-    newdir="$(pwd)/$dir"
+    if [ "$dir"=="." ]; then 
+        newdir="$(pwd)"
+    else 
+        newdir="$(pwd)/$dir"
+    fi
 else
     newdir="$dir"
 fi
@@ -68,26 +72,26 @@ fi
 cd $newdir
 #ls -a
 
-echo "[LOG$(date -Iseconds |tr -d ":+T-" |head -c -5)] Changed directory to $newdir" >> $newdir/$0-hist.log
-echo "[CMD$(date -Iseconds |tr -d ":+T-" |head -c -5)] $ cd $newdir" >> $newdir/$0-hist.log
+echo "[LOG$(date -Iseconds |tr -d ":+T-" |head -c -5)] Changed directory to $newdir" >> ./$0-hist.log
+echo "[CMD$(date -Iseconds |tr -d ":+T-" |head -c -5)] $ cd $newdir" >> ./$0-hist.log
 
 name=$(date -Iseconds |tr -d ":+T-" |head -c -5)
 
-grep "$dir" ~/.bash_history > relations.log
-echo "[LOG$(date -Iseconds |tr -d ":+T-" |head -c -5)] Relations writed to $dir/relations.log" >> $newdir/$0-hist.log
-echo "[CMD$(date -Iseconds |tr -d ":+T-" |head -c -5)] $ grep '$dir' ~/.bash_history">> $newdir/$0-hist.log
+grep "$dir" ~/.bash_history > ./relations.log
+echo "[LOG$(date -Iseconds |tr -d ":+T-" |head -c -5)] Relations writed to $dir/relations.log" >> ./$0-hist.log
+echo "[CMD$(date -Iseconds |tr -d ":+T-" |head -c -5)] $ grep '$dir' ~/.bash_history">> ./$0-hist.log
 
-cp ~/.bash_history $newdir/$name.bash_history
-echo "[LOG$(date -Iseconds |tr -d ":+T-" |head -c -5)] .bash_history file copied to $newdir" >> $newdir/$0-hist.log
-echo "[CMD$(date -Iseconds |tr -d ":+T-" |head -c -5)] $ cp ~/.bash_history $newdir/$name.bash_history" >> $newdir/$0-hist.log
+cp ~/.bash_history ./$name.bash_history
+echo "[LOG$(date -Iseconds |tr -d ":+T-" |head -c -5)] .bash_history file copied to $newdir" >> ./$0-hist.log
+echo "[CMD$(date -Iseconds |tr -d ":+T-" |head -c -5)] $ cp ~/.bash_history $newdir/$name.bash_history" >> ./$0-hist.log
 
-echo "[LOG$(date -Iseconds |tr -d ":+T-" |head -c -5)] $newdir archived." >> $newdir/$0-hist.log
-echo "[CMD$(date -Iseconds |tr -d ":+T-" |head -c -5)] $ tar -czvf $0-$name.tar.gz relations.log $name.bash_history $0-hist.log" >> $newdir/$0-hist.log
-echo "[LOG$(date -Iseconds |tr -d ":+T-" |head -c -5)] Old files removed." >> $newdir/$0-hist.log
-echo "[CMD$(date -Iseconds |tr -d ":+T-" |head -c -5)] $ rm -f relations.log $name.bash_history $0-hist.log" >> $newdir/$0-hist.log
+echo "[LOG$(date -Iseconds |tr -d ":+T-" |head -c -5)] $newdir archived." >> ./$0-hist.log
+echo "[CMD$(date -Iseconds |tr -d ":+T-" |head -c -5)] $ tar -czvf $0-$name.tar.gz relations.log $name.bash_history $0-hist.log" >> ./$0-hist.log
+echo "[LOG$(date -Iseconds |tr -d ":+T-" |head -c -5)] Old files removed." >> ./$0-hist.log
+echo "[CMD$(date -Iseconds |tr -d ":+T-" |head -c -5)] $ rm -f relations.log $name.bash_history $0-hist.log" >> ./$0-hist.log
 
-tar -czvf $0-$name.tar.gz relations.log $name.bash_history $0-hist.log > /dev/null
+tar -czvf ./$0-$name.tar.gz ./relations.log ./$name.bash_history ./$0-hist.log > /dev/null
 
-rm -f relations.log $name.bash_history $0-hist.log
+rm -f ./relations.log ./$name.bash_history ./$0-hist.log
 
 echo "Archived inside-> $newdir"
