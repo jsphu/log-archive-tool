@@ -1,11 +1,11 @@
 body {
   background-color: #e0d5d5;
   font-family: Helvetica, 'Lucida Sans';
-  margin: 30;
-  padding: 0;
+  margin: 100;
+  padding: 10;
 }
 .container {
-  width: 100%;
-  margin: 400px auto;
+  width: 11%;
+  margin: 200px auto;
   overflow: hidden;
 }
